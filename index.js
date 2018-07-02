@@ -3,14 +3,16 @@ const bodyParser = require('body-parser')
 const fs = require('fs')
 const nodemailer = require ('nodemailer')
 
-const cors = require('cors')
-
 let app = express()
 let transporter = nodemailer.createTransport({sendmail: true})
 
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cors())
-app.options('*', cors())
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+})
 
 app.get('/', function(req, res){
   res.send('Hi there.')
