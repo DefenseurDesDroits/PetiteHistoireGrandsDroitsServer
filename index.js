@@ -20,9 +20,9 @@ app.get('/', function(req, res){
 })
 
 app.post('/', function(req, res){
-  writeToFile(req.body).then(() => {
+  writeToFile(req.body).catch(err => console.warn(err)).then(() => {
       console.log('Entry added.')
-      sendToMail(req.body).then(() => {
+      sendToMail(req.body).catch(err => console.warn(err)).then(() => {
         console.log('Mail sent.')
         res.send('thanks')
       })
@@ -39,7 +39,7 @@ function writeToFile(body) {
         fs.appendFile('concours.csv', 'prenom, nom, email, histoire\n', (err) => {
           fs.appendFile('concours.csv', line, (err) => {
             if (err) {
-              console.warn(err)
+              throw(err)
               reject(err)
             } else {
               resolve()
@@ -49,7 +49,7 @@ function writeToFile(body) {
       } else {
         fs.appendFile('concours.csv', line, (err) => {
           if (err) {
-            console.warn(err)
+            throw(err)
             reject(err)
           } else {
             resolve()
@@ -71,7 +71,7 @@ function sendToMail(body) {
       text: content
     }, (err, info) => {
       if (err) {
-        console.warn(err)
+        throw(err)
         reject(err)
       } else {
         resolve()
