@@ -12,15 +12,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.options('*', cors())
 
-app.get('/', function(res){
+app.get('/', function(req, res){
   res.send('Hi there.')
-  res.end('thanks')
 })
 
 app.post('/', function(req, res){
   if (writeToFile(req.body) && sendToMail(req.body)) {
     if (writeToFile(req.body)) {
-      res.writeHead(200, {'Content-Type': 'text/html'})
+      res.writeHead(200, {'Content-Type': 'text/plain'})
       res.end('thanks')
     }
   }
@@ -57,4 +56,4 @@ function sendToMail(body) {
   })
 }
 
-app.listen(3000)
+app.listen('/tmp/sock')
