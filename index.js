@@ -12,6 +12,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.options('*', cors())
 
+app.get('/', function(res){
+  res.send('Hi there.')
+  res.end('thanks')
+})
+
 app.post('/', function(req, res){
   if (writeToFile(req.body) && sendToMail(req.body)) {
     if (writeToFile(req.body)) {
