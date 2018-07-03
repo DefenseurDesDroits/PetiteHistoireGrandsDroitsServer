@@ -66,7 +66,7 @@ function sendToMail(body) {
 
     transporter.sendMail({
       from: `${body.firstname} ${body.lastname} <${body.email}>`,
-      to: 'yorick@ctrlaltdev.xyz',
+      to: 'yorick@ctrlaltdev.xyz;julien.javelaud@defenseurdesdroits.fr',
       subject: '[Concours] Petite histoire des grands droits',
       text: content
     }, (err, info) => {
