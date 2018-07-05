@@ -1,13 +1,16 @@
 const express = require('express')
-const bodyParser = require('body-parser')
+const formidable = require('express-formidable')
 const fs = require('fs')
 const nodemailer = require ('nodemailer')
 
 let app = express()
-let transporter = nodemailer.createTransport({sendmail: true})
-// let transporter = nodemailer.createTransport({streamTransport: true})
+let transporter = nodemailer.createTransport({
+  sendmail: true,
+  newline: 'unix',
+  path: '/usr/sbin/sendmail'
+})
 
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(formidable())
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
@@ -20,9 +23,9 @@ app.get('/', function(req, res){
 })
 
 app.post('/', function(req, res){
-  writeToFile(req.body).catch(err => console.warn(err)).then(() => {
+  writeToFile(req.fields).catch(err => console.warn(err)).then(() => {
       console.log('Entry added.')
-      sendToMail(req.body).catch(err => console.warn(err)).then(() => {
+      sendToMail(req.fields).catch(err => console.warn(err)).then(() => {
         console.log('Mail sent.')
         res.send('thanks')
       })
@@ -66,7 +69,7 @@ function sendToMail(body) {
 
     transporter.sendMail({
       from: `${body.firstname} ${body.lastname} <${body.email}>`,
-      to: 'yorick@ctrlaltdev.xyz;julien.javelaud@defenseurdesdroits.fr',
+      to: 'concours@defenseurdesdroits.fr',
       subject: '[Concours] Petite histoire des grands droits',
       text: content
     }, (err, info) => {
@@ -74,7 +77,19 @@ function sendToMail(body) {
         throw(err)
         reject(err)
       } else {
-        resolve()
+        transporter.sendMail({
+          from: 'concours@defenseurdesdroits.fr',
+          to: `${body.firstname} ${body.lastname} <${body.email}>`,
+          subject: '[Concours] Petite histoire des grands droits',
+          text: "Votre participation a bien été enregistrée :\n\n"+content
+        }, (err, info) => {
+          if (err) {
+            throw(err)
+            reject(err)
+          } else {
+            resolve()
+          }
+        })
       }
     })
   })

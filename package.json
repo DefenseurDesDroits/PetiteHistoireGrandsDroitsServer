@@ -26,8 +26,8 @@
     "url": "https://github.com/DefenseurDesDroits/PetiteHistoireGrandsDroitsServer/issues"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "express-formidable": "^1.0.0",
     "nodemailer": "^4.6.7",
     "pm2": "^2.10.4"
   }
