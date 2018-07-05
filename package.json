@@ -9,7 +9,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "npx pm2 start index.js --name concoursDDE"
+    "start": "npx pm2 start index.js --watch --name concoursDDE"
   },
   "author": "Yorick <yorick@ctrlaltdev.xyz>",
   "licenses": [
