@@ -25,10 +25,8 @@ app.get('/', function(req, res){
 app.post('/', function(req, res){
   writeToFile(req.fields).then(() => {
       console.log('Entry added.')
-      sendToMail(req.fields).then(() => {
-        console.log('Mail sent.')
-        res.send('thanks')
-      }).catch(err => console.warn(err))
+      res.send('thanks')
+      sendToMail(req.fields)
     }
   ).catch(err => console.warn(err))
 })
@@ -63,35 +61,34 @@ function writeToFile(body) {
 }
 
 function sendToMail(body) {
-  return new Promise((resolve, reject) => {
-    let content = `Prenom : ${body.firstname}\nNom : ${body.lastname}\nEmail : ${body.email}\nAge : ${body.age}\n\nHistoire :\n${body.story}`
+  let content = `Prenom : ${body.firstname}\nNom : ${body.lastname}\nEmail : ${body.email}\nAge : ${body.age}\n\nHistoire :\n${body.story}`
 
-    let data = {
-      from: `${body.firstname} ${body.lastname} <${body.email}>`,
-      to: 'concours@defenseurdesdroits.fr',
-      subject: '[Concours] Petite histoire des grands droits',
-      text: content
+  let data = {
+    from: `${body.firstname} ${body.lastname} <${body.email}>`,
+    to: 'concours@defenseurdesdroits.fr',
+    subject: '[Concours] Petite histoire des grands droits',
+    text: content
+  }
+
+  // let contentParticipant = "Ta participation a bien été enregistrée :\n\n" + content
+  // let dataParticipant = {
+  //   from: `${body.firstname} ${body.lastname} <${body.email}>`,
+  //   to: 'concours@defenseurdesdroits.fr',
+  //   subject: '[Concours] Petite histoire des grands droits',
+  //   text: contentParticipant
+  // }
+  // transporter.sendMail(dataParticipant, (err, info) => {
+  //   if (err) {
+  //     console.warn(err)
+  //   }
+  // })
+
+  transporter.sendMail(data, (err, info) => {
+    if (err) {
+      console.warn(err)
+    } else {
+      console.log('Mail sent.')
     }
-
-    // let contentparticipant = "Ta participation a bien été enregistrée :\n\n" + content
-    // transporter.sendMail({
-    //   from: 'concours@defenseurdesdroits.fr',
-    //   to: `${body.firstname} ${body.lastname} <${body.email}>`,
-    //   subject: '[Concours] Petite histoire des grands droits',
-    //   text: contentparticipant
-    // }, (err, info) => {
-    //   if (err) {
-    //     reject(err)
-    //   }
-    // })
-
-    transporter.sendMail(data, (err, info) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
   })
 }
 
