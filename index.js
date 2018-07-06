@@ -37,6 +37,7 @@ app.post('/', function(req, res){
 function writeToFile(body) {
   return new Promise((resolve, reject) => {
     let line = `"${body.firstname}", "${body.lastname}", "${body.email}", "${body.age}", "${body.story}"\n`
+
     fs.lstat('concours.csv', (err) => {
       if (err) {
         fs.appendFile('concours.csv', 'prenom, nom, email, age, histoire\n', (err) => {
@@ -67,6 +68,19 @@ function sendToMail(body) {
   return new Promise((resolve, reject) => {
     let content = `Prenom : ${body.firstname}\nNom : ${body.lastname}\nEmail : ${body.email}\nAge : ${body.age}\n\nHistoire :\n${body.story}`
 
+    let contentparticipant = "Ta participation a bien été enregistrée :\n\n" + content
+
+    transporter.sendMail({
+      from: 'concours@defenseurdesdroits.fr',
+      to: `${body.firstname} ${body.lastname} <${body.email}>`,
+      subject: '[Concours] Petite histoire des grands droits',
+      text: contentparticipant
+    }, (err, info) => {
+      if (err) {
+        throw(err)
+      }
+    })
+
     transporter.sendMail({
       from: `${body.firstname} ${body.lastname} <${body.email}>`,
       to: 'concours@defenseurdesdroits.fr',
@@ -77,19 +91,7 @@ function sendToMail(body) {
         throw(err)
         reject(err)
       } else {
-        transporter.sendMail({
-          from: 'concours@defenseurdesdroits.fr',
-          to: `${body.firstname} ${body.lastname} <${body.email}>`,
-          subject: '[Concours] Petite histoire des grands droits',
-          text: "Ta participation a bien été enregistrée :\n\n"+content
-        }, (err, info) => {
-          if (err) {
-            throw(err)
-            reject(err)
-          } else {
-            resolve()
-          }
-        })
+        resolve()
       }
     })
   })
