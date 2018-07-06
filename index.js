@@ -23,14 +23,14 @@ app.get('/', function(req, res){
 })
 
 app.post('/', function(req, res){
-  writeToFile(req.fields).catch(err => console.warn(err)).then(() => {
+  writeToFile(req.fields).then(() => {
       console.log('Entry added.')
-      sendToMail(req.fields).catch(err => console.warn(err)).then(() => {
+      sendToMail(req.fields).then(() => {
         console.log('Mail sent.')
-      })
-      res.send('thanks')
+        res.send('thanks')
+      }).catch(err => console.warn(err))
     }
-  )
+  ).catch(err => console.warn(err))
 })
 
 
