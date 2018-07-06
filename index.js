@@ -70,16 +70,16 @@ function sendToMail(body) {
 
     let contentparticipant = "Ta participation a bien été enregistrée :\n\n" + content
 
-    transporter.sendMail({
-      from: 'concours@defenseurdesdroits.fr',
-      to: `${body.firstname} ${body.lastname} <${body.email}>`,
-      subject: '[Concours] Petite histoire des grands droits',
-      text: contentparticipant
-    }, (err, info) => {
-      if (err) {
-        throw(err)
-      }
-    })
+    // transporter.sendMail({
+    //   from: 'concours@defenseurdesdroits.fr',
+    //   to: `${body.firstname} ${body.lastname} <${body.email}>`,
+    //   subject: '[Concours] Petite histoire des grands droits',
+    //   text: contentparticipant
+    // }, (err, info) => {
+    //   if (err) {
+    //     throw(err)
+    //   }
+    // })
 
     transporter.sendMail({
       from: `${body.firstname} ${body.lastname} <${body.email}>`,
@@ -90,8 +90,9 @@ function sendToMail(body) {
       if (err) {
         throw(err)
         reject(err)
+      } else {
+        resolve()
       }
-      resolve()
     })
   })
 }
