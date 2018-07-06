@@ -27,8 +27,8 @@ app.post('/', function(req, res){
       console.log('Entry added.')
       sendToMail(req.fields).catch(err => console.warn(err)).then(() => {
         console.log('Mail sent.')
-        res.send('thanks')
       })
+      res.send('thanks')
     }
   )
 })
@@ -43,7 +43,6 @@ function writeToFile(body) {
         fs.appendFile('concours.csv', 'prenom, nom, email, age, histoire\n', (err) => {
           fs.appendFile('concours.csv', line, (err) => {
             if (err) {
-              throw(err)
               reject(err)
             } else {
               resolve()
@@ -53,7 +52,6 @@ function writeToFile(body) {
       } else {
         fs.appendFile('concours.csv', line, (err) => {
           if (err) {
-            throw(err)
             reject(err)
           } else {
             resolve()
@@ -68,8 +66,14 @@ function sendToMail(body) {
   return new Promise((resolve, reject) => {
     let content = `Prenom : ${body.firstname}\nNom : ${body.lastname}\nEmail : ${body.email}\nAge : ${body.age}\n\nHistoire :\n${body.story}`
 
-    let contentparticipant = "Ta participation a bien été enregistrée :\n\n" + content
+    let data = {
+      from: `${body.firstname} ${body.lastname} <${body.email}>`,
+      to: 'concours@defenseurdesdroits.fr',
+      subject: '[Concours] Petite histoire des grands droits',
+      text: content
+    }
 
+    // let contentparticipant = "Ta participation a bien été enregistrée :\n\n" + content
     // transporter.sendMail({
     //   from: 'concours@defenseurdesdroits.fr',
     //   to: `${body.firstname} ${body.lastname} <${body.email}>`,
@@ -77,18 +81,12 @@ function sendToMail(body) {
     //   text: contentparticipant
     // }, (err, info) => {
     //   if (err) {
-    //     throw(err)
+    //     reject(err)
     //   }
     // })
 
-    transporter.sendMail({
-      from: `${body.firstname} ${body.lastname} <${body.email}>`,
-      to: 'concours@defenseurdesdroits.fr',
-      subject: '[Concours] Petite histoire des grands droits',
-      text: content
-    }, (err, info) => {
+    transporter.sendMail(data, (err, info) => {
       if (err) {
-        throw(err)
         reject(err)
       } else {
         resolve()
