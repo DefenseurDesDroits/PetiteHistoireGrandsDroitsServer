@@ -90,9 +90,8 @@ function sendToMail(body) {
       if (err) {
         throw(err)
         reject(err)
-      } else {
-        resolve()
       }
+      resolve()
     })
   })
 }
