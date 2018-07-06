@@ -61,7 +61,7 @@ function writeToFile(body) {
 }
 
 function sendToMail(body) {
-  let content = `Prenom : ${body.firstname}\nNom : ${body.lastname}\nEmail : ${body.email}\nAge : ${body.age}\n\nHistoire :\n${body.story}`
+  let content = `Prenom : ${body.firstname}\nNom : ${body.lastname}\nEmail : ${body.email}\nAge : ${body.age}\r\n\r\nHistoire :\n${body.story}`
 
   let data = {
     from: `${body.firstname} ${body.lastname} <${body.email}>`,
